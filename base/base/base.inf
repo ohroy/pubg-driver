@@ -1,0 +1,90 @@
+;
+; base.inf
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=Sample ; TODO: edit Class
+ClassGuid={78A1C341-4539-11d3-B88D-00C04FAD5171} ; TODO: edit ClassGuid
+Provider=%ManufacturerName%
+CatalogFile=base.cat
+DriverVer= ; TODO: set DriverVer in stampinf property pages
+
+[DestinationDirs]
+DefaultDestDir = 12
+
+; ================= Class section =====================
+
+[ClassInstall32]
+Addreg=SampleClassReg
+
+[SampleClassReg]
+HKR,,,0,%ClassName%
+HKR,,Icon,,-5
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+base.sys  = 1,,
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName%=Standard,NT$ARCH$
+
+[Standard.NT$ARCH$]
+%base.DeviceDesc%=base_Device, Root\base ; TODO: edit hw-id
+
+[base_Device.NT]
+CopyFiles=Drivers_Dir
+
+[Drivers_Dir]
+base.sys
+
+;-------------- Service installation
+[base_Device.NT.Services]
+AddService = base,%SPSVCINST_ASSOCSERVICE%, base_Service_Inst
+
+; -------------- base driver install sections
+[base_Service_Inst]
+DisplayName    = %base.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\base.sys
+
+;
+;--- base_Device Coinstaller installation ------
+;
+
+[DestinationDirs]
+base_Device_CoInstaller_CopyFiles = 11
+
+[base_Device.NT.CoInstallers]
+AddReg=base_Device_CoInstaller_AddReg
+CopyFiles=base_Device_CoInstaller_CopyFiles
+
+[base_Device_CoInstaller_AddReg]
+HKR,,CoInstallers32,0x00010000, "WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll,WdfCoInstaller"
+
+[base_Device_CoInstaller_CopyFiles]
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll
+
+[SourceDisksFiles]
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with SourceDisksNames
+
+[base_Device.NT.Wdf]
+KmdfService =  base, base_wdfsect
+[base_wdfsect]
+KmdfLibraryVersion = $KMDFVERSION$
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+ManufacturerName="<Your manufacturer name>" ;TODO: Replace with your manufacturer name
+ClassName="Samples" ; TODO: edit ClassName
+DiskName = "base Installation Disk"
+base.DeviceDesc = "base Device"
+base.SVCDESC = "base Service"
