@@ -10,9 +10,6 @@ Provider=%ManufacturerName%
 CatalogFile=base.cat
 DriverVer= ; TODO: set DriverVer in stampinf property pages
 
-[DestinationDirs]
-DefaultDestDir = 12
-
 ; ================= Class section =====================
 
 [ClassInstall32]
@@ -25,8 +22,6 @@ HKR,,Icon,,-5
 [SourceDisksNames]
 1 = %DiskName%,,,""
 
-[SourceDisksFiles]
-base.sys  = 1,,
 
 ;*****************************************
 ; Install Section
@@ -62,6 +57,7 @@ ServiceBinary  = %12%\base.sys
 
 [DestinationDirs]
 base_Device_CoInstaller_CopyFiles = 11
+DefaultDestDir = 12
 
 [base_Device.NT.CoInstallers]
 AddReg=base_Device_CoInstaller_AddReg
@@ -75,7 +71,7 @@ WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll
 
 [SourceDisksFiles]
 WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with SourceDisksNames
-
+base.sys  = 1,,
 [base_Device.NT.Wdf]
 KmdfService =  base, base_wdfsect
 [base_wdfsect]
